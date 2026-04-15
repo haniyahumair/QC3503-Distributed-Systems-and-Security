@@ -50,7 +50,7 @@ public class ClientHandler implements Runnable{
 
                 // custom commands
                 String command = message.getCommand();
-                if(command.equals("REGISTER")){
+                if(command.equals("REGISTER")) {
                     this.user_name = message.getMessageBody();
                     pool.broadcastToAll(new Message("[TaskBoard] Welcome " + user_name + "!", "[TaskBoard]", "REGISTER"));
                 }
@@ -59,6 +59,21 @@ public class ClientHandler implements Runnable{
                     String description = message.getMessageBody();
                     Task newTask = taskBoard.createTask(description, user_name);
                     pool.broadcastToAll(new Message("[TaskBoard] Task #" + newTask.getId() + " created by " + user_name + ": " + description, "[TaskBoard]", "CREATE"));
+
+                    for (String label : newTask.getLabels()) {
+                        List<String> subscribers = taskBoard.getSubscribers(label);
+                        if (subscribers != null) {
+                            for (String subscriber : subscribers) {
+                                if(!subscriber.equals(user_name)){
+                                    pool.sendToUser(subscriber, new Message(
+                                            "[NOTIFICATION] New task matching " + label + " — Task #" + newTask.getId() + " \"" + description + "\" by " + user_name,
+                                            "[TaskBoard]",
+                                            "NOTIFICATION"
+                                    ));
+                                }
+                            }
+                        }
+                    }
                 }
 
                 if(command.equals("CREATE_LIST")){
@@ -123,7 +138,7 @@ public class ClientHandler implements Runnable{
 
                     Task task = taskBoard.getTask(taskId);
                     task.setPriority(priority);
-                    pool.broadcastToAll(new Message("[TaskBoard] Successfuly set priority " + priority + "!", "[TaskBoard]", "PRIORITY"));
+                    pool.broadcastToAll(new Message("[TaskBoard] Task #" + taskId + " is set to " + priority + "!", "[TaskBoard]", "PRIORITY"));
                 }
 
                 if(command.equals("LABEL")){

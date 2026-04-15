@@ -43,7 +43,7 @@ Mentioned below is the directory layout and the purpose of each file
 ## Features & Commands
 Once the client is connected to the `ServerSocket`, you can use the following commands:
 - `REGISTER [Username]` — Registers your name with the server session
-- `CREATE [Task Description] #label` — Adds a new task. If a #label is included, the server updates the label registry.
+- `CREATE [Task Description] #label` — Adds a new task. If a #label is included, the server updates the label registry and automatically notifies any users subscribed to that label with a `[NOTIFICATION]` message.
 - `CREATE_LIST [ListName]` - Create a new list to store and organize your tasks.
 - `LIST` - View all the tasks created. 
 - `ADD <taskId> <listName>` - You can assign specific tasks to a list and store them, to make your tasks more organized.
