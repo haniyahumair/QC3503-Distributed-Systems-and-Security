@@ -191,8 +191,8 @@ public class TaskBoard {
     }
 
     public synchronized String subscribe(String labelName, String userName) {
-        if (!labels.contains(labelName)) {
-            return "[TaskBoard] Error: Label: " + labelName + " doesn't exist.";
+        if (!this.labels.contains(labelName) && !labelName.startsWith("#")) {
+            return "[TaskBoard] Error: Label: " + labelName + " does not exit. Please try again! Start with '#'.";
         }
 
         if (!subscriptions.containsKey(labelName)){
@@ -221,17 +221,12 @@ public class TaskBoard {
         return "[TaskBoard] Successfully removed username: " + userName + " from label " + labelName +"." ;
     }
 
-    public synchronized String getAllSubscriptions(String labelName, String userName) {
-        if (!labels.contains(labelName)) {
-            return "[TaskBoard] Error: Label: " + labelName + " doesn't exist.";
+    public synchronized String getAllSubscriptions() {
+        StringBuilder sb = new StringBuilder("[TaskBoard] Full Subscription List:\n");
+        for (String label : subscriptions.keySet()) {
+            sb.append(label).append(" -> ").append(subscriptions.get(label)).append("\n");
         }
-
-        StringBuilder viewAllSubscriptions = new StringBuilder("[TaskBoard] Subscriptions list: \n");
-
-        for(String user : subscriptions.get(labelName)){
-            viewAllSubscriptions.append("#").append(labelName).append("->").append(user).append("\n");
-        }
-        return viewAllSubscriptions.toString();
+        return sb.toString();
     }
 
     public synchronized List<String> getSubscribers(String labelName){

@@ -47,6 +47,7 @@ public class ClientHandler implements Runnable{
                     socket.close();
                     break;
                 }
+
                 // custom commands
                 String command = message.getCommand();
                 if(command.equals("REGISTER")){
@@ -105,17 +106,17 @@ public class ClientHandler implements Runnable{
                 if (command.equals("VIEW")){
                     String[] parts = message.getMessageBody().split(" ");
                     String result = "";
-                    if(parts.length == 1){
+                    if(parts.length == 1){ // VIEW <listname>
                         result = taskBoard.viewList(parts[0]);
                     }
-                    if (parts.length == 2){
+                    if (parts.length == 2){ //VIEW <listname> <taskid>
                         result = taskBoard.viewTask(Integer.parseInt(parts[1]));
                     }
 
                     pool.broadcastToAll(new Message(result, "[TaskBoard]", "VIEW"));
                 }
 
-                if (command.equals("PRIORITY")){
+                if (command.equals("PRIORITY")) {
                     String[] parts = message.getMessageBody().split(" ");
                     int taskId = Integer.parseInt(parts[0]);
                     String priority = parts[1];
@@ -141,9 +142,14 @@ public class ClientHandler implements Runnable{
                 }
 
                 if(command.equals("SUBSCRIBE")){
-                    String labelName = message.getMessageBody();
-                    String result = taskBoard.subscribe(labelName, user_name);
+                    String labelName = message.getMessageBody().trim();
+                    String result = taskBoard.subscribe(labelName, this.user_name);
                     pool.broadcastToAll(new Message(result, "[TaskBoard]", "SUBSCRIBE"));
+                }
+
+                if(command.equals("VIEW_SUBS")){
+                    String result = taskBoard.getAllSubscriptions();
+                    pool.broadcastToAll(new Message(result, "[TaskBoard]", "VIEW_SUBS"));
                 }
 
                 if(command.equals("UNSUBSCRIBE")){

@@ -29,8 +29,10 @@ public class TaskBoardClient {
             // Ask user to wrote some input message- make it running all the time
             Scanner scanner = new Scanner(System.in);
             System.out.println("A client starts...");
+            System.out.println("Welcome to Taskboard! Start by creating a username by using the REGISTER command.");
             String user_name = "";
             while (true){
+                String str_msg = scanner.nextLine();
                 // This message will be put into Message's
                 String[] parts = str_msg.split(" ", 2);
                 String command = parts[0].toUpperCase();
@@ -47,6 +49,7 @@ public class TaskBoardClient {
 
                 // Break the loop when input is "exit"
                 if (str_msg.equalsIgnoreCase("exit")){
+                    outStream.writeObject(new Message("exit", user_name, "EXIT"));
                     socket.close();
                     break;
                 }
